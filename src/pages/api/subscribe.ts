@@ -4,26 +4,52 @@ import { getSession } from "next-auth/react";
 import { stripe } from "../../services/stripe";
 import { fauna } from "../../services/fauna";
 
+type User = {
+    ref: {
+        id: string
+    }
+    data: {
+        stripe_customer_id: string
+    }
+}
+
 export default async (req: NextApiRequest, res: NextApiResponse)=> {
     if(req.method === 'POST') { // verificar se o metodo é post, pois estamos criando algo no nosso bd;
-        const session = await getSession({ req }) // dentro de rq temos os coockies
+        const session = await getSession({ req }) // dentro de req temos os coockies
 
-        // const user
+        const user = await fauna.query<User>( // Primeiro devemos procurar um usuario por email;
+            q.Get(
+                q.Match(
+                    q.Index('user_by_email'),
+                    q.Casefold(session.user.email)
+                )
+            )
+        )
 
-        const stripeCustomer = await stripe.customers.create({
-            email: session.user.email,
+        let customerId = user.data.stripe_customer_id;
 
-            // quando criado devemos salva-lo no FanuaDB;
-        })
+        if (!customerId) { // se id de novo customer não existir ele:
+            const stripeCustomer = await stripe.customers.create({ // Cria um customer;
+                email: session.user.email,
+            });
 
-        // await fauna.query(
-        //     q.Update( // atualizar usuario por email;
+            await fauna.query( // salva no banco;
+                q.Update( 
+                    q.Ref(q.Collection('users'), user.ref.id),
+                    {
+                        data: {
+                            stripe_customer_id: stripeCustomer.id
+                        }
+                    }
+                )
+            )
 
-        //     )
-        // )
+            customerId = stripeCustomer.id; // reatribui a variavel;
+        }
+
 
         const stripeCheckoutSession = await stripe.checkout.sessions.create({
-            customer: stripeCustomer.id, // quem está comprando o produto! ID do nosso cliente do stripe
+            customer: customerId, // quem está comprando o produto! ID do nosso cliente do stripe
             payment_method_types: ['card'],
             billing_address_collection: 'required',
             line_items: [
