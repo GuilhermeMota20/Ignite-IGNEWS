@@ -1,5 +1,4 @@
 import NextAuth from "next-auth"
-import { signIn } from "next-auth/react";
 import GithubProvider from "next-auth/providers/github"
 
 import { query as q } from 'faunadb';
@@ -19,7 +18,7 @@ export default NextAuth({
     ],
     callbacks: {
         async signIn({ user, account, profile }) {
-            const { email } = user;
+            const { email } = user; // email que vem de dentro de user;
 
             try {
                 await fauna.query(
@@ -33,8 +32,8 @@ export default NextAuth({
                             )
                         ),
                         q.Create(
-                            q.Collection('users'),
-                            { data: { email } }
+                            q.Collection('users'), // nome da tabela;
+                            { data: { email } } // dados do usuario que queremos inserir;
                         ),
                         q.Get( // Selecionar usuario que bate com index abaixo:
                             q.Match(

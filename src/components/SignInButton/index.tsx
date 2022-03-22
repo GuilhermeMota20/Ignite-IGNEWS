@@ -7,7 +7,7 @@ export function SignInButton() {
     const { data: session, status } = useSession()
     // const loading = status === "loading"
 
-    return session ? (
+    return session ? ( // se estiver logado me mostre este botão:
         <button 
             type="button"
             className={styles.signInButton}
@@ -18,7 +18,7 @@ export function SignInButton() {
             <FiX color='#737380' className={styles.closeIcon} />
         </button>
 
-    ) : (
+    ) : ( // se não, me mostre este aqui:
         <button
             type="button"
             className={styles.signInButton}
