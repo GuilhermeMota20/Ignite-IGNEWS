@@ -1,9 +1,14 @@
+import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import * as Prismic from '@prismicio/client'
+import { getPrismicClient } from '../../services/prismic';
 import styles from './styles.module.scss';
+
+import { PrismicProvider } from '@prismicio/react';
 
 export default function Posts() {
     return(
-        <>
+        <PrismicProvider>
             <Head>
                 <title>Posts | ig.news</title>
             </Head>
@@ -27,6 +32,23 @@ export default function Posts() {
                     </a>
                 </div>
             </main>
-        </>
+        </PrismicProvider>
     );
 } 
+
+export const getStaticProps: GetStaticProps = async ()=> {
+    const prismic = getPrismicClient();
+
+    const response = await prismic.get({
+        predicates: Prismic.predicate.at('document.type', 'ignews-post'),
+        fetch: ['title', 'content'],
+        pageSize: 100,
+    });
+
+    // console.log(JSON.stringify(response, null, 2));
+    console.log(response);
+
+    return {
+        props: {}
+    }
+};
