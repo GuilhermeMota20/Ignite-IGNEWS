@@ -5,12 +5,6 @@ import { SignInButton } from '../SignInButton';
 import styles from './styles.module.scss';
 
 export function Header() {
-    /* 
-        Uma maneira de se fazer isso seria da seguinte forma:
-            <a className={asPath === '/' ? styles.active : ''}> teste </a> 
-            <a className={asPath === '/posts' ? styles.active : ''}> teste </a> 
-    */
-
     return(
         <header className={styles.headerContainer}>
             <div className={styles.headerContent}>
