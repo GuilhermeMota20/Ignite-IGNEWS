@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
@@ -57,11 +57,10 @@ export default function PostPreview({ post }: PostPreviewProps) {
     );
 }
 
-// ???????????
-export const getStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
     return{
-        paths: [],
-        fallback: 'blocking'
+        paths: [], // quais caminhos (telas) eu gostaria de gerar durante a build | vazio posi quero que seja carregado após o primeiro acesso
+        fallback: 'blocking' // true: se um post que for acessado ainda não foi gerado de forma estática, a requisição será feita e quando o conteudo estiver pronto, será mostrado em tela | blocking: apenas quando todo conteudo estiver pronto atraves de serverSideRendering(ssr) em que ele será mostrado em tela 
     }
 }
 
