@@ -43,3 +43,27 @@
         margin-top: 2.5rem;
     }
 }
+
+@media (max-width: 756px) {
+    .contentContainer {
+        display: flex;
+        justify-content: center;
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+            h1 {
+                font-size: 3rem;
+                line-height: initial;
+            }
+        }
+
+        img {
+            display: none;
+        }
+    }
+}
