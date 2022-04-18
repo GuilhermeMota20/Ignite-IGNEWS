@@ -62,8 +62,8 @@
             }
         }
 
-        img {
-            display: none;
+        & > span {
+            display: none !important;
         }
     }
 }

@@ -72,8 +72,8 @@
     }
 
     .headerContent {
-        img {
-            display: none;
+        & span {
+            display: none !important;
         }
 
         nav {
